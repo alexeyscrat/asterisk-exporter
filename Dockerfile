@@ -1,13 +1,13 @@
-# Используем базовый образ с Alpine Linux
-FROM alpine:latest
+# Используем конкретную версию Alpine Linux
+FROM alpine:3.21
 
 # Устанавливаем необходимые пакеты
-RUN apk add --no-cache curl
+RUN apk update && apk add --no-cache curl
 
 # Скачиваем и устанавливаем asterisk-exporter
-RUN curl -L -o /usr/local/bin/asterisk-exporter https://github.com/khulnasoft-lab/asterisk_exporter/releases/download/v0.5.0/asterisk_exporter-0.5.0.linux-amd64.tar.gz && \
-    tar -xzf /usr/local/bin/asterisk-exporter -C /usr/local/bin/ && \
-    rm /usr/local/bin/asterisk-exporter
+RUN curl -L -o /usr/local/bin/asterisk-exporter.tar.gz https://github.com/khulnasoft-lab/asterisk_exporter/releases/download/v0.5.0/asterisk_exporter-0.5.0.linux-amd64.tar.gz && \
+    tar -xzf /usr/local/bin/asterisk-exporter.tar.gz -C /usr/local/bin/ && \
+    rm /usr/local/bin/asterisk-exporter.tar.gz
 
 # Открываем порт для Prometheus
 EXPOSE 9168
