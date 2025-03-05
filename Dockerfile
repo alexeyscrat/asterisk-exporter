@@ -1,13 +1,26 @@
-# Используем базовый образ Ubuntu
-FROM ubuntu:22.04
+# Этап 1: Сборка бинарного файла
+FROM golang:1.21-alpine AS builder
 
-# Устанавливаем curl
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+# Устанавливаем зависимости для сборки
+RUN apk add --no-cache git make
 
-# Скачиваем и устанавливаем asterisk-exporter
-RUN curl -L -o /usr/local/bin/asterisk-exporter.tar.gz https://github.com/khulnasoft-lab/asterisk_exporter/releases/download/v0.5.0/asterisk_exporter-0.5.0.linux-amd64.tar.gz && \
-    tar -xzf /usr/local/bin/asterisk-exporter.tar.gz -C /usr/local/bin/ && \
-    rm /usr/local/bin/asterisk-exporter.tar.gz
+# Клонируем репозиторий
+RUN git clone https://github.com/robinmarechal/asterisk_exporter /src
+
+# Переходим в директорию проекта
+WORKDIR /src
+
+# Собираем проект
+RUN make build
+
+# Этап 2: Создаем минимальный образ
+FROM alpine:3.21
+
+# Копируем бинарный файл из этапа сборки
+COPY --from=builder /src/bin/asterisk_exporter /usr/local/bin/asterisk_exporter
+
+# Устанавливаем права на выполнение
+RUN chmod +x /usr/local/bin/asterisk_exporter
 
 # Открываем порт для Prometheus
 EXPOSE 9168
