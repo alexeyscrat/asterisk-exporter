@@ -1,8 +1,8 @@
-# Используем конкретную версию Alpine Linux
-FROM alpine:3.21
+# Используем базовый образ Debian
+FROM debian:bullseye-slim
 
-# Устанавливаем необходимые пакеты
-RUN apk update && apk add --no-cache curl
+# Устанавливаем curl
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
 # Скачиваем и устанавливаем asterisk-exporter
 RUN curl -L -o /usr/local/bin/asterisk-exporter.tar.gz https://github.com/khulnasoft-lab/asterisk_exporter/releases/download/v0.5.0/asterisk_exporter-0.5.0.linux-amd64.tar.gz && \
