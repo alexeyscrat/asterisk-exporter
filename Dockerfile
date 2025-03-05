@@ -1,5 +1,5 @@
-# Используем базовый образ Debian
-FROM debian:bullseye-slim
+# Используем базовый образ Ubuntu
+FROM ubuntu:22.04
 
 # Устанавливаем curl
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
